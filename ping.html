@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping Test Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ping Test Tool</h1>
+        <input type="text" id="serverUrl" placeholder="Enter server URL (e.g., https://example.com)">
+        <button onclick="pingServer()">Ping</button>
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        function pingServer() {
+            const serverUrl = document.getElementById('serverUrl').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (!serverUrl) {
+                alert('Please enter a server URL.');
+                return;
+            }
+
+            const startTime = performance.now();
+
+            fetch(serverUrl, { mode: 'no-cors' })
+                .then(() => {
+                    const endTime = performance.now();
+                    const pingTime = endTime - startTime;
+                    displayResult(`Ping time: ${pingTime.toFixed(2)} ms`);
+                })
+                .catch(() => {
+                    displayResult('Failed to ping the server.');
+                });
+        }
+
+        function displayResult(message) {
+            const resultsDiv = document.getElementById('results');
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.textContent = message;
+            resultsDiv.appendChild(resultItem);
+        }
+    </script>
+</body>
+</html>
