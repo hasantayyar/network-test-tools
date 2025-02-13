@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Lookup Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DNS Lookup Tool</h1>
+        <input type="text" id="domainName" placeholder="Enter domain name (e.g., example.com)">
+        <button onclick="lookupDNS()">Lookup</button>
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        async function lookupDNS() {
+            const domainName = document.getElementById('domainName').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (!domainName) {
+                alert('Please enter a domain name.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://dns.google.com/resolve?name=${domainName}`);
+                const data = await response.json();
+                displayResult(data);
+            } catch (error) {
+                displayResult({ error: 'Failed to perform DNS lookup.' });
+            }
+        }
+
+        function displayResult(data) {
+            const resultsDiv = document.getElementById('results');
+            if (data.error) {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.textContent = data.error;
+                resultsDiv.appendChild(resultItem);
+                return;
+            }
+
+            if (data.Answer) {
+                data.Answer.forEach(record => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
+                    resultItem.textContent = `${record.name} - ${record.type} - ${record.data}`;
+                    resultsDiv.appendChild(resultItem);
+                });
+            } else {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.textContent = 'No DNS records found.';
+                resultsDiv.appendChild(resultItem);
+            }
+        }
+    </script>
+</body>
+</html>
