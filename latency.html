@@ -1,0 +1,41 @@
+
+<!-- Speed test of different CDNs from client side -->
+<!-- Test a CDN from Beijing and from Ireland to compare -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CDN Speed Test</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui/lib/theme-chalk/index.css">
+    </head>
+<body>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  
+  <div id="app">
+        <button onclick="testCDN('https://d1.awsstatic.com/whitepapers/aws-overview.pdf', 1.1)">Speed test global</button>
+        <button onclick="testCDN('https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/download/pdf/DNCDN11828177_en-US_intl_190411150127_public_f035759a83dad7e7eb6931f32ecc582c.pdf', 2.1)">Speed test China</button>
+        <div id="result" style="display: none;">
+            <p>Latency: <span id="latency"></span> ms/MB</p>
+        </div>
+    </div>
+
+    <script>
+        function testCDN(url, fileSizeMB) {
+            const startTime = performance.now();
+            axios.get(url)
+                .then(() => {
+                    const endTime = performance.now();
+                    const duration = endTime - startTime;
+                    const latency = (duration / fileSizeMB).toFixed(2);
+                    document.getElementById('latency').innerText = latency;
+                    document.getElementById('result').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error fetching the resource:', error);
+                    document.getElementById('latency').innerText = 'Error';
+                    document.getElementById('result').style.display = 'block';
+                });
+        }
+    </script>
+</body>
+</html>
